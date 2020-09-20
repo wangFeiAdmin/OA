@@ -1,0 +1,120 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<HEAD>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<TITLE>Itcast OA</TITLE>
+	<LINK th:href="@{/style/blue/login.css}" type=text/css rel=stylesheet />
+    <script language="javascript" th:src="@{/script/jquery.js}"></script>
+</HEAD>
+<script>
+    var code='';
+    $(function () {
+
+//邮箱框失去焦点
+        $("#verifyEmail").blur(function(){
+
+            //获取用户填写的邮箱
+            var  email=$("#verifyEmail").val();
+            var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+            if(reg.test(email)){
+                $("#emailError").html("正在发送邮件");
+                //发送电子邮件，验证邮箱
+                $.ajax({
+                    type:'post',
+                    url: '/user/verifyCode',
+                    data:{
+                        "email":email
+                    },
+                    dataType:"JSON",
+                    success:function (json) {
+                        json= JSON.parse(json);
+                        code=json.verifyCode;
+                        if(code!=''){
+                            $("#showTr").show();
+                            window.setTimeout("TimeDown()",60000);//一分钟后过期
+                            $("#emailError").html("发送成功，请注意查收");
+                        }
+                    }
+                })
+            }else{
+                $("#verifyEmail").val('');
+                $("#emailError").html("邮箱格式错误");
+            }
+        });
+        //获得焦点
+        $("#verifyEmail").focus(function(){
+            $("#emailError").html("");
+        });
+
+
+
+        //验证码框失去焦点
+        $("#authCode").blur(function(){
+            var s=code.substring(2);
+            if($("#authCode").val()!=s){
+                $("#authCode").val("");
+                $("#authCodeError").html("验证码错误");
+            }else{
+                //如果验证码正确那就隐藏验证框
+                $("#showTr").hide();//就隐藏div
+            }
+        });
+        //验证码框获得焦点
+        $("#authCode").focus(function(){
+            $("#emailError").html("");
+            $("#authCodeError").html("");
+        });
+    })
+
+    function TimeDown() {
+        code='';
+        $("#showTr").hide();//就隐藏div
+        $("#emailError").html("验证超时");
+    }
+
+</script>
+<BODY LEFTMARGIN=0 TOPMARGIN=0 MARGINWIDTH=0 MARGINHEIGHT=0 CLASS=PageBody >
+<FORM th:method="post"  th:action="@{/user/login}">
+    <DIV ID="CenterAreaBg">
+        <DIV ID="CenterArea">
+            <DIV ID="LogoImg"><IMG BORDER="0" th:src="@{/style/blue/images/logo.png}" /></DIV>
+            <DIV ID="LoginInfo">
+                <TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 width=100%>
+                    <TR>
+                        <TD width=45 CLASS="Subject"><IMG BORDER="0" th:src="@{/style/blue/images/login/userId.gif}" /></TD>
+                        <TD><INPUT SIZE="20" CLASS="TextField" TYPE="text" name="logname" /></TD>
+                        <TD ROWSPAN="2" STYLE="padding-left:10px;">
+                            <INPUT TYPE="image" th:src="@{/style/blue/images/login/userLogin_button.gif}"/></TD>
+                    </TR>
+                    <TR>
+                        <TD CLASS="Subject"><IMG BORDER="0" th:src="@{/style/blue/images/login/password.gif}" /></TD>
+                        <TD><INPUT SIZE="20" CLASS="TextField" TYPE="password" name="password" /></TD>
+                    </TR>
+                    <tr><td style="color: gainsboro">E-mail</td>
+                        <td>
+                            <input required="required" id="verifyEmail"  type="email" name="email" class="TextField"/>
+                            <span id="emailError" style="color: gainsboro"></span>
+                        </td>
+                    </tr>
+                    <tr style="display:none" id="showTr">
+                        <td style="color: gainsboro;">验证码</td>
+                        <td ><input required="required"  id="authCode" type="text" class="TextField" />
+                            <span id="authCodeError" style="color: gainsboro"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <br>
+                            <span style="color: gainsboro" th:text="${error}!=null ?${error}:''"></span></td>
+                    </tr>
+                </TABLE>
+
+            </DIV>
+            <DIV ID="CopyRight"><A href="javascript:void(0)">&copy; 2010 版权所有 itcast</A></DIV>
+        </DIV>
+    </DIV>
+</FORM>
+</BODY>
+
+</HTML>
+

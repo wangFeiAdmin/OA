@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--绑定操作用户表的资源路径-->
+<mapper namespace="com.wf.oa.dao.OperationUserTable">
+    <!--条件查询-->
+    <select id="selectUserAll" resultMap="getUser" parameterType="User">
+        select
+        id,
+        logname,
+        name,
+        sex,
+        phone,
+        email,
+        deptno,
+        userno,
+        password,
+        picture,
+        remark
+        from
+        t_user
+        <where>
+            <if test="id!=null and id!=''">
+                and id=#{id}
+            </if>
+            <if test="logname!=null and logname!=''">
+                and logname=#{logname}
+            </if>
+            <if test="password!=null and password!=''">
+                and password=#{password}
+            </if>
+            <if test="name!=null and name!=''">
+                and name=#{name}
+            </if>
+            <if test="deptSerial!=null and deptSerial!=''">
+                and deptno=#{deptSerial}
+            </if>
+        </where>
+
+    </select>
+
+    <resultMap id="getUser" type="User">
+        <result property="id" column="id"/>
+        <result property="logname" column="logname"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="deptSerial" column="deptno"/>
+        <result property="remark" column="remark"/>
+        <result property="userno" column="userno"/>
+        <result property="password" column="password"/>
+        <result property="picture" column="picture"/>
+        <association property="deptno" column="deptno" select="selectDept" javaType="Dept"/>
+    <collection property="post" column="userno" javaType="java.util.ArrayList"  ofType="Post" select="selectPost"/>
+    </resultMap>
+    <!--查询每个user对应的部门-->
+    <select id="selectDept" resultType="Dept">
+        SELECT
+            id,
+            NAME,
+            number,
+            rank,
+            superiors,
+            remark
+            FROM
+            t_dept
+        where number=#{deptSerial}
+    </select>
+
+    <!--查询用户对应的岗位-->
+    <select id="selectPost"  resultType="Post">
+        select
+         id,
+        name,
+        postno,
+        deptno,
+        userno
+ from t_post where userno=#{userno}
+    </select>
+
+    <!--查询所有岗位-->
+    <select id="selectPostAll" resultType="map">
+        select name,postno from t_post where userno=-1
+    </select>
+
+    <!--添加一个新的用户-->
+    <insert id="addUser" parameterType="User">
+      INSERT INTO `t_user`
+        VALUES
+            (
+            #{id},
+            #{logname},
+            #{password},
+            #{name} ,
+            #{sex},
+            #{phone},
+            #{email},
+            #{deptSerial},
+            #{picture},
+            #{userno},
+            #{remark}
+              )
+    </insert>
+
+    <!--查询最大用户编号-->
+    <select id="getMaxUserNO" resultType="int">
+        select max(userno) from t_user
+    </select>
+
+    <!--给员工设置岗位-->
+    <update id="addPost" parameterType="int">
+       update  t_post set
+       <foreach collection="list" item="postno" index="idx">
+       <if test="idx==0">
+           userno=#{postno}
+       </if>
+       </foreach>
+        where postno in
+        <foreach collection="list" separator="," open="("  close=")" item="postno" index="idx">
+            <if test="idx!=0">
+                #{postno}
+            </if>
+        </foreach>
+    </update>
+
+
+    <!--删除用户并且会将岗位置空-->
+    <delete id="deleteUser" parameterType="int">
+        delete from t_user where userno=#{userno}
+    </delete>
+    <!--将岗位置空-->
+    <update id="updatePost" parameterType="int">
+        update t_post set userno=-1 where userno=#{userno}
+    </update>
+
+    <!--修改用户信息-->
+    <update id="updateUserMassage" parameterType="User">
+        update t_user
+        <set>
+            <if test="logname!=null and logname!=''">
+                logname=#{logname},
+            </if>
+            <if test="password!=null and password!=''">
+                password=#{password},
+            </if>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="sex!=null and sex!=''">
+                sex=#{sex},
+            </if>
+            <if test="phone!=null and phone!=''">
+                phone=#{phone},
+            </if>
+            <if test="email!=null and email!=''">
+                email=#{email},
+            </if>
+            <if test="deptSerial!=null and deptSerial!=''">
+                deptno=#{deptSerial},
+            </if>
+            <if test="picture!=null and picture!=''">
+                picture=#{picture},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+
+</mapper>

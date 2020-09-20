@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--绑定操作部门表的资源路径-->
+<mapper namespace="com.wf.oa.dao.OperationDeptTable">
+    <!--查询所有部门并按照部门级别降序排列-->
+    <select id="getDept" resultMap="mapDept" parameterType="Dept">
+        <include refid="selectDeptAll"/>
+        <where>
+            <if test="id!=null and id!=''">
+                and id = #{id}
+            </if>
+            <if test="name!=null and name!=''">
+                and name = #{name}
+            </if>
+            <if test="number!=null and number!=''">
+                and number = #{number}
+            </if>
+            <if test="rank!=null and rank!=''">
+                and rank = #{rank}
+            </if>
+            <if test="superiorsId!=null and superiorsId!=''">
+                and superiors = #{superiorsId}
+            </if>
+        </where>
+        ORDER BY
+        rank ASC
+    </select>
+
+    <!--映射父类的dept对象-->
+    <resultMap id="mapDept" type="Dept">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="number" column="number"/>
+        <result property="rank" column="rank"/>
+        <result property="superiorsId" column="superiors"/>
+        <result property="describe" column="describe"/>
+        <association property="superiors" column="superiors" javaType="Dept" select="getSuperiors"/>
+    </resultMap>
+    <!--动态的查询父类的dept对象-->
+    <select id="getSuperiors" resultType="Dept">
+    <!--当存在父类时,查找父类-->
+        <if test="superiorsId!=0 and superiorsId!=null and superiorsId!=''">
+            <include refid="selectDeptAll"/>
+            where
+            number=#{superiorsId}
+        </if>
+    <!--当不存在父类部门时-->
+        <if test="superiorsId==0">
+           <include refid="selectDeptAll"/>
+            where rank=-1
+        </if>
+    </select>
+    <!--查询部门表全部字段的SQL片段-->
+    <sql id="selectDeptAll">
+         SELECT
+            id,
+            NAME,
+            number,
+            rank,
+            superiors,
+            remark
+            FROM
+            t_dept
+    </sql>
+
+    <!--查询最大部门编号-->
+    <select id="getMaxNumber" resultType="int">
+        select  max(number) from t_dept
+    </select>
+
+    <!--添加部门-->
+    <insert id="addDept" parameterType="Dept">
+        insert into
+             t_dept
+        values(
+            #{id},
+            #{name},
+            #{number},
+            #{rank},
+            #{superiorsId},
+            #{remark})
+    </insert>
+
+    <!--修改部门-->
+    <update id="updateDept" parameterType="Dept">
+        update t_dept
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="number!=null and number!=''">
+                number=#{number},
+            </if>
+            <if test="rank!=null and rank!=''">
+                rank=#{rank},
+            </if>
+            <if test="superiorsId!=null and superiorsId!=''">
+                superiors=#{superiorsId},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--删除部门-->
+    <delete id="deleteDept" parameterType="Dept">
+               DELETE
+        FROM
+            t_dept
+        WHERE
+            id IN (
+            SELECT
+                tb3.ids
+            FROM
+                (
+                SELECT
+                    id AS ids
+                FROM
+                    t_dept,(
+                    SELECT
+                        number
+                    FROM
+                        t_dept
+                    WHERE
+                        id = #{id}
+                    ) AS tb1
+                WHERE
+                    t_dept.superiors = tb1.number
+                    OR t_dept.number = tb1.number
+                ) AS tb3
+            )
+    </delete>
+
+    <!--条件查询-->
+    <select id="selectUserAll" resultMap="getUser" parameterType="User">
+        select
+            id,
+            logname,
+            name,
+            sex,
+            phone,
+            email,
+            deptno,
+            post,
+            remark
+        from
+            t_user
+        <where>
+            <if test="id!=null and id!=''">
+                and id=#{id}
+            </if>
+            <if test="logname!=null and logname!=''">
+                and logname=#{logname}
+            </if>
+            <if test="name!=null and name!=''">
+                and name=#{name}
+            </if>
+            <if test="deptSerial!=null and deptSerial!=''">
+                and deptno=#{deptSerial}
+            </if>
+        </where>
+
+    </select>
+
+    <resultMap id="getUser" type="Dept">
+        <result property="id" column="id"/>
+        <result property="logname" column="logname"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="deptSerial" column="deptno"/>
+        <result property="post" column="post"/>
+        <result property="remark" column="remark"/>
+        <association property="deptno" column="deptno" select="selectDept" javaType="Dept"/>
+    </resultMap>
+    <!--查询每个user对应的部门-->
+    <select id="selectDept" resultType="Dept">
+        <include refid="selectDeptAll"></include>
+        where deptno=#{deptSerial}
+    </select>
+</mapper>

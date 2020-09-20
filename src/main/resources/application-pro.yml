@@ -1,0 +1,6 @@
+#项目上线环境
+server:
+  port: 8080
+spring:
+#配置当前yml名称
+  profiles: pro

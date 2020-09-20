@@ -1,0 +1,214 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>用户信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script language="javascript" th:src="@{/script/jquery.js}"></script>
+    <script language="javascript" th:src="@{/script/pageCommon.js}" charset="utf-8"></script>
+    <script language="javascript" th:src="@{/script/PageUtils.js}" charset="utf-8"></script>
+    <script language="javascript" th:src="@{/script/DemoData.js}" charset="utf-8"></script>
+	<script language="javascript" th:src="@{/script/DataShowManager.js}" charset="utf-8"></script>
+    <link type="text/css" rel="stylesheet" th:href="@{/style/blue/pageCommon.css}" />
+    <script type="text/javascript">
+        //存储验证码
+        var code='';
+        $(function () {
+            //失去焦点
+            $("#loginNameInput").blur(function(){
+                //获取登录框中的用户名
+                var loginName=$("#loginNameInput").val();
+              if(loginName!=''){
+                  //发送ajax验证用户名的唯一性
+                  $.ajax({
+                      url:'/user/verifyName',
+                      type:'post',
+                      data:{
+                          "logname":loginName
+                      },
+                      dataType:"JSON",
+                      success:function(json) {
+                          json= JSON.parse(json);
+                          //结果为true，表示重复
+                          if(json.target==true){
+                              $("#loginSpan").css("color","red");
+                              $("#loginNameInput").val("");
+                              $("#loginSpan").html("用户名重复");
+                          }
+                      }
+                  })
+              }
+
+            });
+
+            //获得焦点
+            $("#loginNameInput").focus(function(){
+                $("#loginSpan").html("");
+            });
+
+
+            //邮箱框失去焦点
+            $("#verifyEmail").blur(function(){
+                //获取用户填写的邮箱
+                var  email=$("#verifyEmail").val();
+                var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+                if(reg.test(email)){
+                    $("#emailError").html("正在发送邮件");
+                    //发送电子邮件，验证邮箱
+                    $.ajax({
+                        type:'post',
+                        url: '/user/verifyCode',
+                        data:{
+                            "email":email
+                        },
+                        dataType:"JSON",
+                        success:function (json) {
+                            json= JSON.parse(json);
+                            console.log("json数据："+json)
+                            code=json.verifyCode;
+                            if(code!=''){
+                                // $("#tan").show().delay(1500).hide(300);
+                                $("#showTr").show();
+                                window.setTimeout("TimeDown()",60000);//一分钟后过期
+                                $("#emailError").html("发送成功，请注意查收");
+                            }
+                        }
+                    })
+                }else{
+                    $("#verifyEmail").val('');
+                    $("#emailError").html("邮箱格式错误");
+                }
+            });
+            //获得焦点
+            $("#verifyEmail").focus(function(){
+                $("#emailError").html("");
+            });
+
+            //验证码框失去焦点
+            $("#authCode").blur(function(){
+                var s=code.substring(2);
+                if($("#authCode").val()!=s){
+                    $("#authCodeError").html("");
+                    $("#authCodeError").html("验证码错误，请检查邮箱重新填写");
+                }else{
+                    //如果验证码正确那就隐藏验证框
+                    $("#showTr").hide();//就隐藏div
+                }
+            });
+            //验证码框获得焦点
+            $("#authCode").focus(function(){
+                $("#emailError").html("");
+                $("#authCodeError").html("");
+            });
+
+        })
+
+        function TimeDown() {
+            code='';
+            $("#showTr").hide();//就隐藏div
+            $("#emailError").html("验证码超时");
+        }
+    </script>
+</head>
+<body>
+
+<!-- 标题显示 -->
+<div id="Title_bar">
+    <div id="Title_bar_Head">
+        <div id="Title_Head"></div>
+        <div id="Title"><!--页面标题-->
+            <img border="0" width="13" height="13" th:src="@{/style/images/title_arrow.gif}"/> 用户信息
+        </div>
+        <div id="Title_End"></div>
+    </div>
+</div>
+
+<!--显示表单内容-->
+<div id=MainArea>
+    <form th:action="${updateUser}==null ? '/user/create':'/user/update'" method="post">
+        <input name="id" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.get(0).id}">
+        <input name="userno" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.get(0).userno}">
+        <input name="picture" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.get(0).picture}">
+
+        <div class="ItemBlock_Title1"><!-- 信息说明 --><div class="ItemBlock_Title1">
+        	<img border="0" width="4" height="7" th:src="@{/style/blue/images/item_point.gif}" /> 用户信息 </div>
+        </div>
+        
+        <!-- 表单内容显示 -->
+        <div class="ItemBlockBorder">
+            <div class="ItemBlock">
+                <table cellpadding="0" cellspacing="0" class="mainForm">
+                    <tr><td width="100">所属部门</td>
+                        <td><select  required="required" name="deptSerial" class="SelectStyle">
+                            <option value="0" th:selected="${updateUser==null}">请选择部门</option>
+                            <option th:selected="${updateUser!=null} and ${updateUser.get(0).deptno.name}==${dept.name}"  th:each="dept :${DeptList}"  th:value="${dept.number}" th:text="${dept.name}"></option>
+                        </select>
+                        </td>
+                    </tr>
+                    <tr><td>登录名</td>
+                        <td><input  required="required" th:value="${updateUser} !=null ?${updateUser.get(0).logname}:''" type="text" name="logname" id="loginNameInput" class="InputStyle"/> *
+                            <span style="color: #66FF66" id="loginSpan">（登录名要唯一）</span>
+						</td>
+                    </tr>
+                    <tr><td>姓名</td>
+                        <td><input  required="required" th:value="${updateUser} !=null ?${updateUser.get(0).name}:''" type="text" name="name" class="InputStyle"/> *</td>
+                    </tr>
+					<tr><td>性别</td>
+                        <td>
+                            <input type="RADIO" th:checked="${updateUser} !=null ?(${updateUser.get(0).sex}=='男'?true:false):''" name="sex" value="男" id="male"/><label for="male">男</label>
+							<input type="RADIO"  th:checked="${updateUser} !=null ?(${updateUser.get(0).sex}=='女'?true:false):''" name="sex" value="女" id="female"/><label for="female">女</label>
+						</td>
+                    </tr>
+					<tr><td>联系电话</td>
+                        <td><input required="required" th:value="${updateUser} !=null ?${updateUser.get(0).phone}:''" type="text" name="phone" class="InputStyle"/></td>
+                    </tr>
+                    <tr><td>E-mail</td>
+                        <td>
+                            <input required="required" id="verifyEmail" th:value="${updateUser} !=null ?${updateUser.get(0).email}:''" type="email" name="email" class="InputStyle"/>
+                            <span id="emailError" style="color: red"></span>
+                        </td>
+                    </tr>
+                    <tr style="display:none" id="showTr">
+                        <td>验证码</td>
+                        <td><input required="required"   id="authCode" type="text" class="InputStyle" />
+                            <span id="authCodeError" style="color: red"></span>
+                        </td>
+                    </tr>
+                    <tr><td>备注</td>
+                        <td><textarea name="remark" th:text="${updateUser} !=null ?${updateUser.get(0).remark}:''" class="TextareaStyle"></textarea></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+		<div class="ItemBlock_Title1"><!-- 信息说明 --><div class="ItemBlock_Title1">
+        	<img border="0" width="4" height="7" th:src="@{/style/blue/images/item_point.gif}" /> 岗位设置 </div>
+        </div>
+        
+        <!-- 表单内容显示 -->
+        <div class="ItemBlockBorder">
+            <div class="ItemBlock">
+                <table cellpadding="0" cellspacing="0" class="mainForm">
+                    <tr>
+						<td width="100">岗位</td>
+                        <td><select name="postCode" multiple="true" size="10" class="SelectStyle">
+
+                            <option   th:each="post :${updateUser?.get(0)?.post}" th:text="${post.name}"  selected="selected"  th:value="${post.postno}"></option>
+                            <option th:each="post :${PostMap}" th:text="${post.name}" th:value="${post.postno}"></option>
+                            </select>
+                            按住Ctrl键可以多选或取消选择
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>		
+		
+        <!-- 表单操作 -->
+        <div id="InputDetailBar">
+            <input type="image" th:src="@{/style/images/save.png}"/>
+            <a href="javascript:history.go(-1);"><img th:src="@{/style/images/goBack.png}"/></a>
+        </div>
+    </form>
+</div>
+
+
+</body>
+</html>

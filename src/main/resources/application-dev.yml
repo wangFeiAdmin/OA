@@ -1,0 +1,52 @@
+#项目开发环境
+server:
+  port: 8080
+spring:
+  profiles: dev
+#关闭模板引擎的缓存
+  thymeleaf:
+    cache: false
+#配置数据源
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/oa?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#配置连接池信息
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT1FROMDUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    filters: stat,wall,log4j
+    logSlowSql: true
+  #配置邮件发送
+  mail:
+    #发起人邮箱
+    username: 3218839619@qq.com
+    #发起人的授权码
+    password: kkoaebtinajjdhbi
+    #发送的服务器，即使用的是qq邮箱，还是新浪
+    host: smtp.qq.com
+    #开启加密验证
+    properties:
+      mail:
+        smtl:
+          ssl:
+            enable: true
+#配置实体类别名
+mybatis:
+  type-aliases-package: com.wf.oa.bean
+#配置sqlmapper文件路径
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+#配置logback日志打印
+logging:
+  config: classpath:config/logback.xml
+
