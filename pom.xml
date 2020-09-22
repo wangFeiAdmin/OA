@@ -19,6 +19,13 @@
     </properties>
 
     <dependencies>
+
+        <!--security权限控制-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!--配置邮件发送的启动器-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

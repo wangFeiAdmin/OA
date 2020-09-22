@@ -26,9 +26,8 @@
 
 <!--显示表单内容-->
 <div id=MainArea>
-    <form action="../System_User/list.html" enctype="multipart/form-data">
-        <div class="ItemBlock_Title1"><!-- 信息说明<DIV CLASS="ItemBlock_Title1">
-        	<IMG BORDER="0" WIDTH="4" HEIGHT="7" th:src="../style/blue/images/item_point.gif" /> 个人信息 </DIV>  -->
+    <form th:action="@{/user/upload}"  method="post" enctype="multipart/form-data">
+        <div class="ItemBlock_Title1">
         </div>
         
         <!-- 表单内容显示 -->
@@ -39,7 +38,7 @@
                         <td width="150">用户ID（登录名）</td>
                         <td th:text="${session.loginUser.logname}"></td>
 						<td rowspan="5" align="right">
-							<img th:src="@{/style/images/tu.jpg}"/>
+							<img style="width: 100px; height: 100px" th:src="@{'/upload/'+${session.loginUser.picture}}"/>
 						</td>
                     </tr>
                     <tr>

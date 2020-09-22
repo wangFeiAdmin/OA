@@ -13,11 +13,17 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -170,4 +176,58 @@ public class OperationUserServiceImpl implements OperationUserService {
     private  String getCode(){
        return String.format("%04d",new Random().nextInt(9999));
     }
+
+
+    /**
+     * 修改用户头像
+     * @param file
+     * @param loginUser
+     * @return
+     */
+    public  boolean filesUpload(MultipartFile file,User loginUser){
+        //设置文件上传路径
+        String path = "src/main/resources/static/upload/";
+        File dir = new File (path);
+        String Filename = file.getOriginalFilename();
+        //设置默认头像名称
+        String picture="defaultAvatar.gif";
+        //获取项目相对路径，和文件名称
+        File newFile = new File(dir.getAbsolutePath() +File.separator+Filename);
+        //判断文件是否重名
+        if(newFile.exists()){
+            File f=new File(dir.getAbsolutePath() +File.separator+loginUser.getLogname());
+           if(!f.exists()){
+               f.mkdirs();
+           }
+            newFile = new File(f, Filename);
+            picture=loginUser.getLogname().concat("/").concat(Filename);
+        }else{
+            picture=Filename;
+        }
+        try {
+            //创建文件
+            file.transferTo(newFile);
+
+            //获取当前用户之前的头像文件
+            File oldFile=new File(dir.getAbsolutePath() +File.separator+loginUser.getPicture());
+            //判断用户之前的头像文件是否存在，并且不是，默认头像，则将之前的文件删除
+            if(oldFile.exists()&&!loginUser.getPicture().contains("defaultAvatar.gif")){
+               oldFile.delete();
+           }
+            //设置头像名称
+            loginUser.setPicture(picture);
+            //修改信息
+            OperationUserTable.updateUserMassage(loginUser);
+        } catch (IOException e) {
+            //上传错误就将上传文件删除
+            if(newFile.exists()){
+                newFile.delete();
+            }
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+
+
 }

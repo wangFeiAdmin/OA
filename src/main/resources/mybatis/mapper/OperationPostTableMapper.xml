@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--绑定操作岗位表的资源路径-->
+<mapper namespace="com.wf.oa.dao.OperationPostDao">
+    <!--查询全部岗位-->
+    <select id="selectPost" parameterType="Post" resultType="Post">
+        SELECT
+	        id,
+	        NAME,
+	        postno,
+            deptno,
+            userno,
+            remark
+        FROM
+	        t_post
+	    <where>
+            <if test="id!=null and id!=''">
+                and id=#{id}
+            </if>
+            <if test="name!=null and name!=''">
+                and name=#{name}
+            </if>
+            <if test="postno!=null and postno!=''">
+                and postno=#{postno}
+            </if>
+            <if test="deptno!=null and deptno!=''">
+                and deptno=#{deptno}
+            </if>
+            <if test="userno!=null and userno!=''">
+                and userno=#{userno}
+            </if>
+        </where>
+        order  by postno desc
+    </select>
+
+<!--删除岗位-->
+    <delete id="deletePost" parameterType="Post">
+        delete from t_post where id=#{id}
+    </delete>
+
+    <!--插入新的岗位-->
+    <insert id="addPost" parameterType="Post">
+      INSERT INTO `t_post`
+        VALUES
+	(#{id}, #{name}, #{postno}, #{deptno}, #{userno}, #{remark} )
+    </insert>
+
+    <!--查询最大部门编号-->
+    <select id="getMaxPostNo" resultType="int">
+        select max(postno) from t_post
+    </select>
+
+    <update id="updatePost" parameterType="Post">
+        update  t_post
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="deptno!=null and deptno!=''">
+                 deptno=#{deptno},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+</mapper>

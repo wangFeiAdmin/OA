@@ -1,13 +1,13 @@
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<title>岗位设置</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script language="javascript" src="../../static/script/jquery.js"></script>
-    <script language="javascript" src="../../static/script/pageCommon.js" charset="utf-8"></script>
-    <script language="javascript" src="../../static/script/PageUtils.js" charset="utf-8"></script>
-    <script language="javascript" src="../../static/script/DemoData.js" charset="utf-8"></script>
-	<script language="javascript" src="../../static/script/DataShowManager.js" charset="utf-8"></script>
-    <link type="text/css" rel="stylesheet" href="../../static/style/blue/pageCommon.css" />
+	<script language="javascript" th:src="@{/script/jquery.js}"></script>
+    <script language="javascript" th:src="@{/script/pageCommon.js}" charset="utf-8"></script>
+    <script language="javascript" th:src="@{/script/PageUtils.js}" charset="utf-8"></script>
+    <script language="javascript" th:src="@{/script/DemoData.js}" charset="utf-8"></script>
+	<script language="javascript" th:src="@{/script/DataShowManager.js}" charset="utf-8"></script>
+    <link type="text/css" rel="stylesheet" th:href="@{/style/blue/pageCommon.css}" />
     <script type="text/javascript"> 
     </script>
 </head>
@@ -18,7 +18,7 @@
     <div id="Title_bar_Head">
         <div id="Title_Head"></div>
         <div id="Title"><!--页面标题-->
-            <img border="0" width="13" height="13" src="../../static/style/images/title_arrow.gif"/> 岗位设置
+            <img border="0" width="13" height="13" th:src="@{/style/images/title_arrow.gif}"/> 岗位设置
         </div>
         <div id="Title_End"></div>
     </div>
@@ -26,22 +26,32 @@
 
 <!--显示表单内容-->
 <div id="MainArea">
-    <form action="list.html">
+    <form th:action="${updatePost}==null ?'/post/create':'/post/update'" method="post">
         <div class="ItemBlock_Title1"><!-- 信息说明<DIV CLASS="ItemBlock_Title1">
-        	<IMG BORDER="0" WIDTH="4" HEIGHT="7" SRC="../style/blue/images/item_point.gif" /> 岗位信息 </DIV>  -->
+        	<IMG BORDER="0" WIDTH="4" HEIGHT="7" th:src="../style/blue/images/item_point.gif" /> 岗位信息 </DIV>  -->
         </div>
-        
+        <input th:if="${updatePost}!=null" type="hidden" name="id" th:value="${updatePost.get(0).id}">
         <!-- 表单内容显示 -->
         <div class="ItemBlockBorder">
             <div class="ItemBlock">
                 <table cellpadding="0" cellspacing="0" class="mainForm">
+
+                    <tr><td width="100">所属部门</td>
+                        <td><select name="deptno" class="SelectStyle">
+                            <option  th:if="${updatePost}==null" value=''>请选择</option>
+                            <option th:if="${updatePost}!=null and ${dept.number}==${updatePost.get(0).deptno}" th:each="dept :${DeptList}"  th:value="${dept.number}" th:text="${dept.name}"></option>
+                            <option th:each="dept :${DeptList}"  th:value="${dept.number}" th:text="${dept.name}"></option>
+                        </select>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td width="100">岗位名称</td>
-                        <td><input type="text" name="name" class="InputStyle" /> *</td>
+                        <td><input type="text" name="name" th:value="${updatePost}!=null? ${updatePost.get(0).name}:''" required="required" class="InputStyle" /> *</td>
                     </tr>
                     <tr>
                         <td>岗位说明</td>
-                        <td><textarea name="description" class="TextareaStyle"></textarea></td>
+                        <td><textarea name="remark" th:text="${updatePost}!=null? ${updatePost.get(0).remark}:''" class="TextareaStyle"></textarea></td>
                     </tr>
                 </table>
             </div>
@@ -49,8 +59,8 @@
         
         <!-- 表单操作 -->
         <div id="InputDetailBar">
-            <input type="image" src="../../static/style/images/save.png"/>
-            <a href="javascript:history.go(-1);"><img src="../../static/style/images/goBack.png"/></a>
+            <input type="image" th:src="@{/style/images/save.png}"/>
+            <a href="javascript:history.go(-1);"><img th:src="@{/style/images/goBack.png}"/></a>
         </div>
     </form>
 </div>

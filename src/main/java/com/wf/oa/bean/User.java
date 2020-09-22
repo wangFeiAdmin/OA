@@ -2,12 +2,15 @@ package com.wf.oa.bean;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class User {
+public class User  {
    private String id;
    private String logname;
    private String password;//密码
@@ -23,11 +26,13 @@ public class User {
    private String picture;//照片名称
    private List<String> postCode;//岗位编号
     private String postName;
-
+    // 用户所有权限
+    private List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
     public User(String id){
         this.id=id;
     }
+
 
     public String getPostName(){
        return this.postName=post.toString().replace("[","").replace("]","");

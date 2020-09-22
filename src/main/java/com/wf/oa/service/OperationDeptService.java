@@ -1,6 +1,7 @@
 package com.wf.oa.service;
 
 import com.wf.oa.bean.Dept;
+import com.wf.oa.bean.Post;
 
 import java.util.List;
 
@@ -32,4 +33,6 @@ public interface OperationDeptService {
      * @return
      */
     boolean delete(String id);
+
+
 }

@@ -35,9 +35,25 @@ public class systemViewController {
         return "bottom";
     }
 
+    //个人信息
     @GetMapping("/editUserInfoUI")
     public  String editUserInfoUI(){
         return "Person_Config/editUserInfoUI";
     }
+
+    //密码修改
+    @GetMapping("/editPasswordUI")
+    public  String editPasswordUI(){
+        return "Person_Config/editPasswordUI";
+    }
+
+
+
+    //权限配置
+    @GetMapping("/System_Role/setPrivilegeUI")
+    public  String setPrivilegeUI(){
+        return "System_Role/setPrivilegeUI";
+    }
+
 
 }

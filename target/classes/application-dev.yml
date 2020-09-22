@@ -40,6 +40,22 @@ spring:
         smtl:
           ssl:
             enable: true
+# 单个文件的最大值
+  servlet:
+    multipart:
+      max-file-size: 10MB
+# 上传文件总的最大值
+      max-request-size: 10MB
+#配置上传文件保存路径
+  mvc:
+    static-path-pattern: /**
+    resources:
+     static-locations:
+      - classpath:/META-INF/resources/
+      - classpath:/static
+      - classpath:/resources/
+      - file:${upload-path}
+upload-path: D:/IDEXiangMu/OA/src/main/resources
 #配置实体类别名
 mybatis:
   type-aliases-package: com.wf.oa.bean
