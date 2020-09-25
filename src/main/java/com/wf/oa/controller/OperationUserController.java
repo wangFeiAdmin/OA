@@ -5,6 +5,11 @@ import com.wf.oa.bean.User;
 import com.wf.oa.service.OperationDeptService;
 import com.wf.oa.service.OperationUserService;
 import com.wf.oa.util.MD5Utils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -13,11 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,22 +33,23 @@ public class OperationUserController {
     @Qualifier("operationDeptServiceImpl")
     OperationDeptService operationDeptService;
 
-    /**
-     * 验证登录信息
-     * @param user
-     * @param model
-     * @return
-     */
+
+
+
     @PostMapping("/login")
-    public String verifyLogin(User user,Model model){
-        //验证用户信息是否正确
-        User verifyUser = OperationUserService.verifyUser(user);
-        if(verifyUser!=null){
-            model.addAttribute("loginUser",verifyUser);
-            //返回至首页
+    public String login(User user,Model model){
+        //获取当前用户
+        Subject subject = SecurityUtils.getSubject();
+        //获取登录表单填写的数据
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getLogname(),user.getPassword());
+        try{
+            subject.login(token);//执行登录的方法，如果没有抛出异常，说明登录成功
             return "index";
+        }catch(UnknownAccountException e){//用户名不存在
+            model.addAttribute("error","用户名错误");
+        }catch (IncorrectCredentialsException e){//密码不存在
+            model.addAttribute("error","密码错误");
         }
-        model.addAttribute("error","用户名或密码错误");
         return "loginUI";
     }
 
@@ -172,6 +173,15 @@ public class OperationUserController {
         return "redirect:/user/select";
     }
 
+    /**
+     * 修改密码
+     * @param oldPas
+     * @param newPas
+     * @param affirmPas
+     * @param modelMap
+     * @param model
+     * @return
+     */
     @PostMapping("/updatePas")
     public String  updatePas(
             @RequestParam("oldPas") String oldPas, //旧密码
@@ -199,5 +209,8 @@ public class OperationUserController {
         //返回至密码修改界面
         return "Person_Config/editPasswordUI";
     }
+
+
+
 }
 

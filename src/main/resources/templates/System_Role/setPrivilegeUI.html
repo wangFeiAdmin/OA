@@ -65,7 +65,7 @@
 
 <!--显示表单内容-->
 <div id=MainArea>
-    <form action="list.html">
+    <form th:action="@{/post/auth}" method="post">
         <div class="ItemBlock_Title1"><!-- 信息说明 --><div class="ItemBlock_Title1">
         	<img border="0" width="4" height="7" th:src="@{/style/blue/images/item_point.gif}" /> 正在为【部门经理】配置权限 </div>
         </div>
@@ -91,141 +91,40 @@
 							<!-- 显示权限树 -->
 							<td>
 <ul id='tree'>
+	<input type="hidden" name="userno" th:value="${authPost.get(0).userno}">
+	<input type="hidden" name="postno" th:value="${authPost.get(0).postno}">
 	<li id='li_45'>
-		<input type='checkbox' name='resourceIdList' id='cb_45' onclick='doChecked("li_45", this.checked)'/>
-		<label for='cb_45'><span class='folder' id='45'>系统管理</span></label>
+<!--		th:if="${param.status} != null and ${#strings.trim(param.status)} eq 'false'"-->
+		<input type='checkbox'  th:value="${roleObj.id}" th:each="roleObj,iterStat :${authPost.get(0).role}" th:if="${#strings.trim(roleObj.role)} eq 'ROLE_SystemAdministrator' or  ${authPost.get(0).role.size}==0" th:checked="${#strings.trim(roleObj.role)} eq 'ROLE_SystemAdministrator'"  name='resourceIdList' id='cb_45' onclick='doChecked("li_45", this.checked)'/>
+		<input type='checkbox'   value="4" th:if="${authPost.get(0).role.size()}==0"  name='resourceIdList' id='cb_45' onclick='doChecked("li_45", this.checked)'/>
+		<label for='cb_45'><span class='folder' id='45'   >系统管理</span></label>
 		<ul>
 			<li id='li_46'>
-				<input type='checkbox' name='resourceIdList' id='cb_46' onclick='doChecked("li_46", this.checked)'/>
+				<input type='checkbox'  th:value="${roleObj.id}" th:each="roleObj,iterStat :${authPost.get(0).role}" th:if="${#strings.trim(roleObj.role)} eq 'ROLE_DEPT' or  ${authPost.get(0).role.size}==0" th:checked="${#strings.trim(roleObj.role)} eq 'ROLE_DEPT'"  name='resourceIdList' id='cb_46' onclick='doChecked("li_46", this.checked)'/>
+				<input type='checkbox'   value="3" th:if="${authPost.get(0).role.size()}==0"  name='resourceIdList' id='cb_46' onclick='doChecked("li_46", this.checked)'/>
 				<label for='cb_46'><span class='folder' id='46'>部门管理</span></label>
-				<ul>
-					<li id='li_128'>
-						<input type='checkbox' name='resourceIdList' id='cb_128' onclick='doChecked("li_128", this.checked)'/>
-						<label for='cb_128'><span class='folder' id='128'>部门列表</span></label>
-					</li>
-					<li id='li_28'>
-						<input type='checkbox' name='resourceIdList' id='cb_28' onclick='doChecked("li_28", this.checked)'/>
-						<label for='cb_28'><span class='folder' id='28'>部门添加</span></label>
-					</li>
-					<li id='li_29'>
-						<input type='checkbox' name='resourceIdList' id='cb_29' onclick='doChecked("li_29", this.checked)'/>
-						<label for='cb_29'><span class='folder' id='29'>部门删除</span></label>
-					</li>
-					<li id='li_30'>
-						<input type='checkbox' name='resourceIdList' id='cb_30' onclick='doChecked("li_30", this.checked)'/>
-						<label for='cb_30'><span class='folder' id='30'>部门修改</span></label>
-					</li>
-				</ul>
 			</li>
 			<li id='li_47'>
-				<input type='checkbox' name='resourceIdList' id='cb_47' onclick='doChecked("li_47", this.checked)'/>
+				<input type='checkbox'  th:value="${roleObj.id}" th:each="roleObj,iterStat :${authPost.get(0).role}" th:if="${#strings.trim(roleObj.role)} eq 'ROLE_POST' or  ${authPost.get(0).role.size}==0" th:checked="${#strings.trim(roleObj.role)} eq 'ROLE_POST'" name='resourceIdList' id='cb_47' onclick='doChecked("li_47", this.checked)'/>
+				<input type='checkbox'   value="1" th:if="${authPost.get(0).role.size()}==0"  name='resourceIdList' id='cb_47' onclick='doChecked("li_47", this.checked)'/>
 				<label for='cb_47'><span class='folder' id='47'>岗位管理</span></label>
-				<ul>
-					<li id='li_131'>
-						<input type='checkbox' name='resourceIdList' id='cb_131' onclick='doChecked("li_131", this.checked)'/>
-						<label for='cb_131'><span class='folder' id='131'>岗位列表</span></label>
-					</li>
-					<li id='li_31'>
-						<input type='checkbox' name='resourceIdList' id='cb_31' onclick='doChecked("li_31", this.checked)'/>
-						<label for='cb_31'><span class='folder' id='31'>岗位添加</span></label>
-					</li>
-					<li id='li_32'>
-						<input type='checkbox' name='resourceIdList' id='cb_32' onclick='doChecked("li_32", this.checked)'/>
-						<label for='cb_32'><span class='folder' id='32'>岗位删除</span></label>
-					</li>
-					<li id='li_33'>
-						<input type='checkbox' name='resourceIdList' id='cb_33' onclick='doChecked("li_33", this.checked)'/>
-						<label for='cb_33'><span class='folder' id='33'>岗位修改</span></label>
-					</li>
-					<li id='li_34'>
-						<input type='checkbox' name='resourceIdList' id='cb_34' onclick='doChecked("li_34", this.checked)'/>
-						<label for='cb_34'><span class='folder' id='34'>岗位设置权限</span></label>
-					</li>
-				</ul>
 			</li>
 			<li id='li_48'>
-				<input type='checkbox' name='resourceIdList' id='cb_48' onclick='doChecked("li_48", this.checked)'/>
+				<input type='checkbox'  th:value="${roleObj.id}" th:each="roleObj,iterStat :${authPost.get(0).role}" th:if="${#strings.trim(roleObj.role)} eq 'ROLE_USER' or  ${authPost.get(0).role.size}==0" th:checked="${#strings.trim(roleObj.role)} eq 'ROLE_USER'" name='resourceIdList' id='cb_48' onclick='doChecked("li_48", this.checked)'/>
+				<input type='checkbox'   value="2" th:if="${authPost.get(0).role.size()}==0"  name='resourceIdList' id='cb_48' onclick='doChecked("li_48", this.checked)'/>
 				<label for='cb_48'><span class='folder' id='48'>用户管理</span></label>
-				<ul>
-					<li id='li_135'>
-						<input type='checkbox' name='resourceIdList' id='cb_135' onclick='doChecked("li_135", this.checked)'/>
-						<label for='cb_135'><span class='folder' id='135'>用户列表</span></label>
-					</li>
-					<li id='li_35'>
-						<input type='checkbox' name='resourceIdList' id='cb_35' onclick='doChecked("li_35", this.checked)'/>
-						<label for='cb_35'><span class='folder' id='35'>用户添加</span></label>
-					</li>
-					<li id='li_36'>
-						<input type='checkbox' name='resourceIdList' id='cb_36' onclick='doChecked("li_36", this.checked)'/>
-						<label for='cb_36'><span class='folder' id='36'>用户删除</span></label>
-					</li>
-					<li id='li_37'>
-						<input type='checkbox' name='resourceIdList' id='cb_37' onclick='doChecked("li_37", this.checked)'/>
-						<label for='cb_37'><span class='folder' id='37'>用户修改</span></label>
-					</li>
-					<li id='li_38'>
-						<input type='checkbox' name='resourceIdList' id='cb_38' onclick='doChecked("li_38", this.checked)'/>
-						<label for='cb_38'><span class='folder' id='38'>用户初始化密码</span></label>
-					</li>
-				</ul>
 			</li>
 		</ul>
 	</li>
 	<li id='li_1'>
-		<input type='checkbox' name='resourceIdList' id='cb_1' onclick='doChecked("li_1", this.checked)'/>
+		<input type='checkbox'  th:value="${roleObj.id}" th:each="roleObj,iterStat :${authPost.get(0).role}" th:if="${#strings.trim(roleObj.role)} eq 'ROLE_ApprovalProcess' or  ${authPost.get(0).role.size}==0" th:checked="${#strings.trim(roleObj.role)} eq 'ROLE_ApprovalProcess'" name='resourceIdList' id='cb_1' onclick='doChecked("li_1", this.checked)'/>
+		<input type='checkbox'   value="5" th:if="${authPost.get(0).role.size()}==0"  name='resourceIdList' id='cb_1' onclick='doChecked("li_1", this.checked)'/>
 		<label for='cb_1'><span class='folder' id='1'>审批流转</span></label>
-		<ul>
-			<li id='li_2'>
-				<input type='checkbox' name='resourceIdList' id='cb_2' onclick='doChecked("li_2", this.checked)'/>
-				<label for='cb_2'><span class='folder' id='2'>起草申请</span></label>
-			</li>
-			<li id='li_3'>
-				<input type='checkbox' name='resourceIdList' id='cb_3' onclick='doChecked("li_3", this.checked)'/>
-				<label for='cb_3'><span class='folder' id='3'>我的申请查询</span></label>
-			</li>
-			<li id='li_4'>
-				<input type='checkbox' name='resourceIdList' id='cb_4' onclick='doChecked("li_4", this.checked)'/>
-				<label for='cb_4'><span class='folder' id='4'>待我审批</span></label>
-			</li>
-			<li id='li_5'>
-				<input type='checkbox' name='resourceIdList' id='cb_5' onclick='doChecked("li_5", this.checked)'/>
-				<label for='cb_5'><span class='folder' id='5'>经我审批</span></label>
-			</li>
-			<li id='li_6'>
-				<input type='checkbox' name='resourceIdList' id='cb_6' onclick='doChecked("li_6", this.checked)'/>
-				<label for='cb_6'><span class='folder' id='6'>文档模板管理</span></label>
-			</li>
-			<li id='li_7'>
-				<input type='checkbox' name='resourceIdList' id='cb_7' onclick='doChecked("li_7", this.checked)'/>
-				<label for='cb_7'><span class='folder' id='7'>审批流程管理</span></label>
-			</li>
-		</ul>
 	</li>
 	<li id='li_20'>
-		<input type='checkbox' name='resourceIdList' id='cb_20' onclick='doChecked("li_20", this.checked)'/>
+		<input type='checkbox'  th:value="${roleObj.id}" th:each="roleObj,iterStat :${authPost.get(0).role}" th:if="${#strings.trim(roleObj.role)} eq 'ROLE_PracticalUtil' or  ${authPost.get(0).role.size}==0" th:checked="${#strings.trim(roleObj.role)} eq 'ROLE_PracticalUtil'" name='resourceIdList' id='cb_20' onclick='doChecked("li_20", this.checked)'/>
+		<input type='checkbox'   value="6" th:if="${authPost.get(0).role.size()}==0"  name='resourceIdList' id='cb_20' onclick='doChecked("li_20", this.checked)'/>
 		<label for='cb_20'><span class='folder' id='20'>实用工具</span></label>
-		<ul>
-			<li id='li_21'>
-				<input type='checkbox' name='resourceIdList' id='cb_21' onclick='doChecked("li_21", this.checked)'/>
-				<label for='cb_21'><span class='folder' id='21'>公司网站</span></label>
-			</li>
-			<li id='li_22'>
-				<input type='checkbox' name='resourceIdList' id='cb_22' onclick='doChecked("li_22", this.checked)'/>
-				<label for='cb_22'><span class='folder' id='22'>火车时刻</span></label>
-			</li>
-			<li id='li_23'>
-				<input type='checkbox' name='resourceIdList' id='cb_23' onclick='doChecked("li_23", this.checked)'/>
-				<label for='cb_23'><span class='folder' id='23'>飞机航班</span></label>
-			</li>
-			<li id='li_24'>
-				<input type='checkbox' name='resourceIdList' id='cb_24' onclick='doChecked("li_24", this.checked)'/>
-				<label for='cb_24'><span class='folder' id='24'>邮编区号</span></label>
-			</li>
-			<li id='li_25'>
-				<input type='checkbox' name='resourceIdList' id='cb_25' onclick='doChecked("li_25", this.checked)'/>
-				<label for='cb_25'><span class='folder' id='25'>国际时间</span></label>
-			</li>
-		</ul>
 	</li>
 </ul>
 </td>
@@ -238,7 +137,7 @@
         <!-- 表单操作 -->
         <div id="InputDetailBar">
             <input type="image" th:src="@{/style/images/save.png}"/>
-            <a href="javascript:history.go(-1);"><img th:src="@{/style/images/goBack.pn}"/></a>
+            <a href="javascript:history.go(-1);"><img th:src="@{/style/images/goBack.png}"/></a>
         </div>
     </form>
 </div>

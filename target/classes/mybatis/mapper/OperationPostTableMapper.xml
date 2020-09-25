@@ -5,7 +5,7 @@
 <!--绑定操作岗位表的资源路径-->
 <mapper namespace="com.wf.oa.dao.OperationPostDao">
     <!--查询全部岗位-->
-    <select id="selectPost" parameterType="Post" resultType="Post">
+    <select id="selectPost" parameterType="Post" resultMap="PostMap">
         SELECT
 	        id,
 	        NAME,
@@ -35,6 +35,30 @@
         order  by postno desc
     </select>
 
+<resultMap id="PostMap" type="Post">
+    <result property="id" column="id"/>
+    <result property="name" column="name"/>
+    <result property="postno" column="postno"/>
+    <result property="deptno" column="deptno"/>
+    <result property="userno" column="userno"/>
+    <result property="remark" column="remark"/>
+    <collection property="role" column="userno" javaType="java.util.ArrayList"  ofType="Role" select="selectUrl"/>
+</resultMap>
+
+
+    <!--查询用户对应的角色-->
+    <select id="selectUrl"  resultType="Role">
+    SELECT
+           t_role.id,
+	         t_role.role
+    FROM
+	         t_role,
+	         t_post_role
+    WHERE
+	         t_post_role.role = t_role.id
+	AND      t_post_role.postno =#{userno}
+    </select>
+
 <!--删除岗位-->
     <delete id="deletePost" parameterType="Post">
         delete from t_post where id=#{id}
@@ -51,7 +75,7 @@
     <select id="getMaxPostNo" resultType="int">
         select max(postno) from t_post
     </select>
-
+    <!--修改岗位信息-->
     <update id="updatePost" parameterType="Post">
         update  t_post
         <set>
@@ -67,4 +91,15 @@
         </set>
         where id=#{id}
     </update>
+
+    <!--为岗位设置权限-->
+    <insert id="addAuth" parameterType="String">
+        INSERT INTO t_post_role
+        VALUES
+        <foreach collection="list" index="idx" item="v" separator=",">
+            ${v}
+        </foreach>
+    </insert>
+
+
 </mapper>

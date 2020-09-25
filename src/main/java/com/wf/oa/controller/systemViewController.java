@@ -3,6 +3,7 @@ package com.wf.oa.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
@@ -49,10 +50,11 @@ public class systemViewController {
 
 
 
-    //权限配置
-    @GetMapping("/System_Role/setPrivilegeUI")
-    public  String setPrivilegeUI(){
-        return "System_Role/setPrivilegeUI";
+
+
+    @RequestMapping("/index")
+    public  String index(){
+        return "index";
     }
 
 

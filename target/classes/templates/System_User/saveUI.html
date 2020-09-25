@@ -122,16 +122,16 @@
 </div>
 
 <!--显示表单内容-->
-<div id=MainArea>
+<div id=MainArea >
     <form th:action="${updateUser}==null ? '/user/create':'/user/update'" method="post">
-        <input name="id" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.get(0).id}">
-        <input name="userno" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.get(0).userno}">
-        <input name="picture" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.get(0).picture}">
+        <input name="id" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.id}">
+        <input name="userno" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.userno}">
+        <input name="picture" type="hidden" th:if="${updateUser}!=null" th:value="${updateUser.picture}">
 
         <div class="ItemBlock_Title1"><!-- 信息说明 --><div class="ItemBlock_Title1">
         	<img border="0" width="4" height="7" th:src="@{/style/blue/images/item_point.gif}" /> 用户信息 </div>
         </div>
-        
+
         <!-- 表单内容显示 -->
         <div class="ItemBlockBorder">
             <div class="ItemBlock">
@@ -139,30 +139,30 @@
                     <tr><td width="100">所属部门</td>
                         <td><select  required="required" name="deptSerial" class="SelectStyle">
                             <option value="0" th:selected="${updateUser==null}">请选择部门</option>
-                            <option th:selected="${updateUser!=null} and ${updateUser.get(0).deptno.name}==${dept.name}"  th:each="dept :${DeptList}"  th:value="${dept.number}" th:text="${dept.name}"></option>
+                            <option th:selected="${updateUser!=null} and ${updateUser.deptno.name}==${dept.name}"  th:each="dept :${DeptList}"  th:value="${dept.number}" th:text="${dept.name}"></option>
                         </select>
                         </td>
                     </tr>
                     <tr><td>登录名</td>
-                        <td><input  required="required" th:value="${updateUser} !=null ?${updateUser.get(0).logname}:''" type="text" name="logname" id="loginNameInput" class="InputStyle"/> *
+                        <td><input  required="required" th:value="${updateUser} !=null ?${updateUser.logname}:''" type="text" name="logname" id="loginNameInput" class="InputStyle"/> *
                             <span style="color: #66FF66" id="loginSpan">（登录名要唯一）</span>
 						</td>
                     </tr>
                     <tr><td>姓名</td>
-                        <td><input  required="required" th:value="${updateUser} !=null ?${updateUser.get(0).name}:''" type="text" name="name" class="InputStyle"/> *</td>
+                        <td><input  required="required" th:value="${updateUser} !=null ?${updateUser.name}:''" type="text" name="name" class="InputStyle"/> *</td>
                     </tr>
 					<tr><td>性别</td>
                         <td>
-                            <input type="RADIO" th:checked="${updateUser} !=null ?(${updateUser.get(0).sex}=='男'?true:false):''" name="sex" value="男" id="male"/><label for="male">男</label>
-							<input type="RADIO"  th:checked="${updateUser} !=null ?(${updateUser.get(0).sex}=='女'?true:false):''" name="sex" value="女" id="female"/><label for="female">女</label>
+                            <input type="RADIO" th:checked="${updateUser} !=null ?(${updateUser.sex}=='男'?true:false):''" name="sex" value="男" id="male"/><label for="male">男</label>
+							<input type="RADIO"  th:checked="${updateUser} !=null ?(${updateUser.sex}=='女'?true:false):''" name="sex" value="女" id="female"/><label for="female">女</label>
 						</td>
                     </tr>
 					<tr><td>联系电话</td>
-                        <td><input required="required" th:value="${updateUser} !=null ?${updateUser.get(0).phone}:''" type="text" name="phone" class="InputStyle"/></td>
+                        <td><input required="required" th:value="${updateUser} !=null ?${updateUser.phone}:''" type="text" name="phone" class="InputStyle"/></td>
                     </tr>
                     <tr><td>E-mail</td>
                         <td>
-                            <input required="required" id="verifyEmail" th:value="${updateUser} !=null ?${updateUser.get(0).email}:''" type="email" name="email" class="InputStyle"/>
+                            <input required="required" id="verifyEmail" th:value="${updateUser} !=null ?${updateUser.email}:''" type="email" name="email" class="InputStyle"/>
                             <span id="emailError" style="color: red"></span>
                         </td>
                     </tr>
@@ -173,7 +173,7 @@
                         </td>
                     </tr>
                     <tr><td>备注</td>
-                        <td><textarea name="remark" th:text="${updateUser} !=null ?${updateUser.get(0).remark}:''" class="TextareaStyle"></textarea></td>
+                        <td><textarea name="remark" th:text="${updateUser} !=null ?${updateUser.remark}:''" class="TextareaStyle"></textarea></td>
                     </tr>
                 </table>
             </div>
@@ -191,7 +191,7 @@
 						<td width="100">岗位</td>
                         <td><select name="postCode" multiple="true" size="10" class="SelectStyle">
 
-                            <option   th:each="post :${updateUser?.get(0)?.post}" th:text="${post.name}"  selected="selected"  th:value="${post.postno}"></option>
+                            <option   th:each="post :${updateUser?.post}" th:text="${post.name}"  selected="selected"  th:value="${post.postno}"></option>
                             <option th:each="post :${PostMap}" th:text="${post.name}" th:value="${post.postno}"></option>
                             </select>
                             按住Ctrl键可以多选或取消选择
@@ -203,6 +203,7 @@
 		
         <!-- 表单操作 -->
         <div id="InputDetailBar">
+            <span style="color: #2a8ed1">请先验证邮箱在点击保存</span><br/><br/>
             <input type="image" th:src="@{/style/images/save.png}"/>
             <a href="javascript:history.go(-1);"><img th:src="@{/style/images/goBack.png}"/></a>
         </div>

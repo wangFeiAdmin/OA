@@ -32,4 +32,11 @@ public interface OperationPostService {
      * @return
      */
     boolean updatePost(Post post);
+
+    /**
+     * 给岗位设置权限
+     * @param roleList
+     * @return
+     */
+    boolean addAuth(List<String> roleList);
 }

@@ -44,4 +44,11 @@ public interface OperationPostDao {
      * @return
      */
     boolean updatePost(Post post);
+
+    /**
+     * 给对应的岗位设置权限
+     * @param roleList
+     * @return
+     */
+    boolean addAuth(List<String> roleList);
 }

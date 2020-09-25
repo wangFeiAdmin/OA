@@ -54,6 +54,7 @@
         <result property="picture" column="picture"/>
         <association property="deptno" column="deptno" select="selectDept" javaType="Dept"/>
     <collection property="post" column="userno" javaType="java.util.ArrayList"  ofType="Post" select="selectPost"/>
+        <collection property="role" column="userno" javaType="java.util.ArrayList"  ofType="Role" select="selectUrl"/>
     </resultMap>
     <!--查询每个user对应的部门-->
     <select id="selectDept" resultType="Dept">
@@ -78,6 +79,19 @@
         deptno,
         userno
  from t_post where userno=#{userno}
+    </select>
+
+    <!--查询用户对应的角色-->
+    <select id="selectUrl"  resultType="Role">
+	  SELECT
+           t_role.id,
+	         t_role.role
+      FROM
+	         t_role,
+	         t_post_role
+      WHERE
+	         t_post_role.role = t_role.id
+	  AND      t_post_role.userno =#{userno}
     </select>
 
     <!--查询所有岗位-->

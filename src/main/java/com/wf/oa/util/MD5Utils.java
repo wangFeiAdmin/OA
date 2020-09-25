@@ -39,7 +39,7 @@ public final class MD5Utils {
      * @return
      * @throws Exception
      */
-    public static boolean verifyPassword(String oldpas,String newPas) throws Exception{
+    public static boolean verifyPassword(String oldpas,String newPas){
         return  oldpas.equals(getEncryptPassword(newPas));
     }
 

@@ -42,7 +42,7 @@
                 <td th:text="${post.remark}!=null?${post.remark}:'无'"></td>
 				<td><a onClick="return delConfirm()" th:href="@{'/post/delete/'+${post.id}}">删除</a>
 					<a th:href="@{'/post/selectAll/saveUI/'+${post.id}}">修改</a>
-					<a th:href="@{/System_Role/setPrivilegeUI}">设置权限</a>
+					<a th:href="@{'/post/System_Role/setPrivilegeUI/'+${post.id}}">设置权限</a>
 				</td>
 			</tr>
         </tbody>

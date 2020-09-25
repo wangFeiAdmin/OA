@@ -1,4 +1,4 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro">
 <head>
 <title>导航菜单</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -30,7 +30,7 @@
             </ul>
         </li>
         <li class="level1">
-            <div onClick="menuClick(this);" class="level1Style"><img th:src="@{/style/images/MenuIcon/FUNC20057.gif}" class="Icon" /> 审批流转</div>
+            <div onClick="menuClick(this);" shiro:hasPermission="ROLE_ApprovalProcess"  class="level1Style"><img th:src="@{/style/images/MenuIcon/FUNC20057.gif}" class="Icon" /> 审批流转</div>
             <ul style="display: none;" class="MenuLevel2">
                 <li class="level2">
                     <div class="level2Style"><img th:src="@{/style/images/MenuIcon/menu_arrow_single.gif}" /> <a target="right" href="Flow_ProcessDefinition/list.html">审批流程管理</a></div>
@@ -142,7 +142,7 @@
             </ul>
         </li>
         <li class="level1">
-            <div onClick="menuClick(this);" class="level1Style"><img th:src="@{/style/images/MenuIcon/FUNC20076.gif}" class="Icon" /> 实用工具</div>
+            <div onClick="menuClick(this);" shiro:hasPermission="ROLE_PracticalUtil " class="level1Style"><img th:src="@{/style/images/MenuIcon/FUNC20076.gif}" class="Icon" /> 实用工具</div>
             <ul style="display: none;" class="MenuLevel2">
                 <li class="level2">
                     <div class="level2Style"><img th:src="@{/style/images/MenuIcon/menu_arrow_single.gif}" /> <a target="_blank" href="http://www.itcast.cn">公司网站</a></div>
@@ -176,16 +176,16 @@
             </ul>
         </li>
         <li class="level1">
-            <div onClick="menuClick(this);" class="level1Style"><img th:src="@{/style/images/MenuIcon/FUNC20082.gif}" class="Icon" /> 系统管理</div>
+            <div onClick="menuClick(this);" shiro:hasPermission="ROLE_SystemAdministrator " class="level1Style"><img th:src="@{/style/images/MenuIcon/FUNC20082.gif}" class="Icon" /> 系统管理</div>
             <ul style="display: none;" class="MenuLevel2">
                 <li class="level2">
-                    <div class="level2Style"><img th:src="@{/style/images/MenuIcon/menu_arrow_single.gif}" /> <a target="right" th:href="@{/post/selectAll/list/0}"> 岗位管理</a></div>
+                    <div class="level2Style" shiro:hasPermission="ROLE_POST"><img th:src="@{/style/images/MenuIcon/menu_arrow_single.gif}" /> <a target="right" th:href="@{/post/selectAll/list/0}"> 岗位管理</a></div>
                 </li>
                 <li class="level2">
-                    <div class="level2Style"><img th:src="@{/style/images/MenuIcon/menu_arrow_single.gif}" /> <a target="right" th:href="@{/dept/getDeptAll/list_treeview/0}"> 部门管理</a></div>
+                    <div class="level2Style" shiro:hasPermission="ROLE_USER"><img th:src="@{/style/images/MenuIcon/menu_arrow_single.gif}" /> <a target="right" th:href="@{/dept/getDeptAll/list_treeview/0}"> 部门管理</a></div>
                 </li>
                 <li class="level2">
-                    <div class="level2Style"><img th:src="@{/style/images/MenuIcon/menu_arrow_single.gif}" /> <a target="right" th:href="@{/user/select}"> 用户管理</a></div>
+                    <div class="level2Style" shiro:hasPermission="ROLE_DEPT"><img th:src="@{/style/images/MenuIcon/menu_arrow_single.gif}" /> <a target="right" th:href="@{/user/select}"> 用户管理</a></div>
                 </li>
                 <!--
                 <li class="level2">

@@ -1,13 +1,12 @@
 package com.wf.oa.service;
 
 import com.wf.oa.bean.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
 
-public interface OperationUserService  {
+public interface OperationUserService {
 
     /**
      * 用于验证当前用户是否存在

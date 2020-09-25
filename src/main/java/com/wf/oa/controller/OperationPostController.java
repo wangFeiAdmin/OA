@@ -2,6 +2,7 @@ package com.wf.oa.controller;
 
 import com.wf.oa.bean.Dept;
 import com.wf.oa.bean.Post;
+import com.wf.oa.bean.Role;
 import com.wf.oa.service.OperationDeptService;
 import com.wf.oa.service.OperationPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/post")
@@ -96,6 +96,26 @@ public class OperationPostController {
         return "redirect:/post/selectAll/list/0";
     }
 
+    /**
+     * 对部门授权
+     * @param resourceIdList
+     * @return
+     */
+    @PostMapping("/auth")
+    @Transactional
+    public String authorization(@RequestParam("postno") String postno,@RequestParam("userno") String userno,@RequestParam("resourceIdList") List<String> resourceIdList){
+        resourceIdList.add(0,userno);
+        resourceIdList.add(1,postno);
+        operationPostService.addAuth(resourceIdList);
+        return "redirect:/post/selectAll/list/0";
+    }
 
-
+    //权限配置
+    @GetMapping("/System_Role/setPrivilegeUI/{id}")
+    public  String setPrivilegeUI(@PathVariable String id, Model model) {
+        Post post = new Post();
+        post.setId(id);
+        model.addAttribute("authPost",operationPostService.getPost(post));
+        return "/System_Role/setPrivilegeUI";
+    }
 }
